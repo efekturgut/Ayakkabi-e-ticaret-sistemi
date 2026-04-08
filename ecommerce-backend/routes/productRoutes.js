@@ -1,4 +1,8 @@
+const express = require("express");
+const router = express.Router();
+const products = require("../data/products");
 
+// Search
 router.get("/search", (req, res) => {
   const { q } = req.query;
 
@@ -13,16 +17,12 @@ router.get("/search", (req, res) => {
   res.json(result);
 });
 
-
-const express = require("express");
-const router = express.Router();
-const products = require("../data/products");
-
+// Tüm ürünler
 router.get("/", (req, res) => {
   res.json(products);
 });
 
-module.exports = router;
+// Tek ürün
 router.get("/:id", (req, res) => {
   const id = Number(req.params.id);
 
@@ -34,3 +34,5 @@ router.get("/:id", (req, res) => {
 
   res.json(product);
 });
+
+module.exports = router;
