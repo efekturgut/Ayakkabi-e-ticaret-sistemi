@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
 app.use("/products", productRoutes);
 app.use("/cart", cartRoutes);
 
-const PORT = 3000;
+const PORT = 4000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
