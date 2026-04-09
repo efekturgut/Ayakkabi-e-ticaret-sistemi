@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
+
 const cart = require("../data/cart");
 const products = require("../data/products");
 
+// Sepeti getir
 router.get("/", (req, res) => {
   const totalPrice = cart.reduce((sum, item) => {
     return sum + item.price * item.quantity;
@@ -10,10 +12,11 @@ router.get("/", (req, res) => {
 
   res.json({
     items: cart,
-    totalPrice,
+    totalPrice
   });
 });
 
+// Sepete ürün ekle
 router.post("/add", (req, res) => {
   const { productId, quantity } = req.body;
 
@@ -44,13 +47,41 @@ router.post("/add", (req, res) => {
       productId: product.id,
       name: product.name,
       price: product.price,
-      quantity,
+      quantity
     });
   }
 
-  res.json({
+  res.status(201).json({
     message: "Ürün sepete eklendi",
-    cart,
+    cart
+  });
+});
+
+// Sepetten ürün sil
+router.delete("/remove/:productId", (req, res) => {
+  const productId = Number(req.params.productId);
+
+  const index = cart.findIndex((item) => item.productId === productId);
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Ürün sepette yok" });
+  }
+
+  cart.splice(index, 1);
+
+  res.json({
+    message: "Ürün sepetten silindi",
+    cart
+  });
+});
+
+// Sepeti temizle
+router.delete("/clear", (req, res) => {
+  cart.length = 0;
+
+  res.json({
+    message: "Sepet temizlendi",
+    cart
   });
 });
 

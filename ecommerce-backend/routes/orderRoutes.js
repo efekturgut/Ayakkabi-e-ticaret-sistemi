@@ -4,6 +4,12 @@ const router = express.Router();
 const cart = require("../data/cart");
 const orders = require("../data/orders");
 
+// Tüm siparişleri getir
+router.get("/", (req, res) => {
+  res.json(orders);
+});
+
+// Sepetten sipariş oluştur
 router.post("/create", (req, res) => {
   if (cart.length === 0) {
     return res.status(400).json({ message: "Sepet boş" });
@@ -17,14 +23,16 @@ router.post("/create", (req, res) => {
     id: orders.length + 1,
     items: [...cart],
     totalPrice,
-    status: "pending",
+    status: "pending"
   };
 
   orders.push(newOrder);
 
+  cart.length = 0;
+
   res.status(201).json({
     message: "Sipariş oluşturuldu",
-    order: newOrder,
+    order: newOrder
   });
 });
 
