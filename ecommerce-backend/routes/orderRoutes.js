@@ -16,11 +16,14 @@ router.post("/create", (req, res) => {
     return res.status(400).json({ message: "Sepet boş" });
   }
 
+  // Önce ürün var mı, stok yeterli mi kontrol et
   for (let item of cart) {
     const product = products.find((p) => p.id === item.productId);
 
     if (!product) {
-      return res.status(404).json({ message: `${item.name} ürünü bulunamadı` });
+      return res.status(404).json({
+        message: `${item.name} ürünü bulunamadı`
+      });
     }
 
     if (product.stock < item.quantity) {
@@ -30,6 +33,7 @@ router.post("/create", (req, res) => {
     }
   }
 
+  // Sonra stok düş
   for (let item of cart) {
     const product = products.find((p) => p.id === item.productId);
     product.stock -= item.quantity;
@@ -47,6 +51,8 @@ router.post("/create", (req, res) => {
   };
 
   orders.push(newOrder);
+
+  // Cart temizle
   cart.length = 0;
 
   res.status(201).json({
