@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cartRoutes = require("./routes/cartRoutes");
 const productRoutes = require("./routes/productRoutes");
-const orderRoutes = require("./routes/orderRoutes");
+const siparisRoutes = require("./routes/orderRoutes");
 
 app.use(express.json());
 
@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
 
 app.use("/products", productRoutes);
 app.use("/cart", cartRoutes);
-app.use("/orders", orderRoutes);
+app.use("/orders", siparisRoutes);
 
 const PORT = 4000;
 
