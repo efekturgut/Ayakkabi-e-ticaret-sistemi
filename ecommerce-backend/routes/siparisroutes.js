@@ -1,21 +1,45 @@
 const express = require("express");
-const app = express();
-const cartRoutes = require("./routes/cartRoutes");
-const productRoutes = require("./routes/productRoutes");
-const siparisRoutes = require("./routes/siparisroutes");
+const router = express.Router();
 
-app.use(express.json());
+// Fake veri (geçici)
+let orders = [];
 
-app.get("/", (req, res) => {
-  res.send("E-commerce backend is running");
+// 📌 Tüm siparişleri getir
+router.get("/", (req, res) => {
+  res.json(orders);
 });
 
-app.use("/products", productRoutes);
-app.use("/cart", cartRoutes);
-app.use("/orders", siparisRoutes);
+// 📌 Yeni sipariş oluştur
+router.post("/", (req, res) => {
+  const newOrder = {
+    id: Date.now(),
+    items: req.body.items || [],
+    total: req.body.total || 0,
+    status: "Hazırlanıyor"
+  };
 
-const PORT = 4000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  orders.push(newOrder);
+  res.status(201).json(newOrder);
 });
+
+// 📌 Sipariş durumunu güncelle
+router.put("/:id", (req, res) => {
+  const order = orders.find(o => o.id == req.params.id);
+
+  if (!order) {
+    return res.status(404).json({ message: "Sipariş bulunamadı" });
+  }
+
+  order.status = req.body.status || order.status;
+
+  res.json(order);
+});
+
+// 📌 Sipariş sil
+router.delete("/:id", (req, res) => {
+  orders = orders.filter(o => o.id != req.params.id);
+
+  res.json({ message: "Sipariş silindi" });
+});
+
+module.exports = router;
