@@ -47,11 +47,11 @@ router.post("/create", (req, res) => {
   };
 
   orders.push(newOrder);
-
   cart.length = 0;
 
   res.status(201).json({
     message: "Sipariş oluşturuldu",
+    notification: "Siparişiniz alındı",
     order: newOrder
   });
 });
@@ -77,8 +77,19 @@ router.put("/:id/status", (req, res) => {
 
   order.status = status;
 
+  let notification = "";
+
+  if (status === "pending") {
+    notification = "Siparişiniz alındı";
+  } else if (status === "shipped") {
+    notification = "Siparişiniz kargoya verildi";
+  } else if (status === "delivered") {
+    notification = "Siparişiniz teslim edildi";
+  }
+
   res.json({
     message: "Sipariş durumu güncellendi",
+    notification,
     order
   });
 });
