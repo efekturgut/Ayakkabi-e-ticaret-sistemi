@@ -1,31 +1,21 @@
 const express = require("express");
-const router = express.Router();
+const app = express();
+const cartRoutes = require("./routes/cartRoutes");
+const productRoutes = require("./routes/productRoutes");
+const siparisRoutes = require("./routes/siparisroutes");
 
-const cart = require("../data/cart");
-const orders = require("../data/orders");
+app.use(express.json());
 
-router.post("/create", (req, res) => {
-  if (cart.length === 0) {
-    return res.status(400).json({ message: "Sepet boş" });
-  }
-
-  const totalPrice = cart.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, 0);
-
-  const newOrder = {
-    id: orders.length + 1,
-    items: [...cart],
-    totalPrice,
-    status: "pending",
-  };
-
-  orders.push(newOrder);
-
-  res.status(201).json({
-    message: "Sipariş oluşturuldu",
-    order: newOrder,
-  });
+app.get("/", (req, res) => {
+  res.send("E-commerce backend is running");
 });
 
-module.exports = router;
+app.use("/products", productRoutes);
+app.use("/cart", cartRoutes);
+app.use("/orders", siparisRoutes);
+
+const PORT = 4000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

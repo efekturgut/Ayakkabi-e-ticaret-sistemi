@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cartRoutes = require("./routes/cartRoutes");
 const productRoutes = require("./routes/productRoutes");
-const siparisRoutes = require("./routes/orderRoutes");
+const siparisRoutes = require("./routes/siparisroutes");
 
 app.use(express.json());
 
