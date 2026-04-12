@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const orderService = require("../services/orderService");
 const cart = require("../data/cart");
 const orders = require("../data/orders");
 const products = require("../data/products");
@@ -12,56 +13,9 @@ router.get("/", (req, res) => {
 
 // Sepetten sipariş oluştur
 router.post("/create", (req, res) => {
-  if (cart.length === 0) {
-    return res.status(400).json({ message: "Sepet boş" });
-  }
-
-  // Önce ürün var mı, stok yeterli mi kontrol et
-  for (let item of cart) {
-    const product = products.find((p) => p.id === item.productId);
-
-    if (!product) {
-      return res.status(404).json({
-        message: `${item.name} ürünü bulunamadı`
-      });
-    }
-
-    if (product.stock < item.quantity) {
-      return res.status(400).json({
-        message: `${product.name} için yeterli stok yok`
-      });
-    }
-  }
-
-  // Sonra stok düş
-  for (let item of cart) {
-    const product = products.find((p) => p.id === item.productId);
-    product.stock -= item.quantity;
-  }
-
-  const totalPrice = cart.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, 0);
-
-  const newOrder = {
-    id: orders.length + 1,
-    items: [...cart],
-    totalPrice,
-    status: "pending"
-  };
-
-  orders.push(newOrder);
-
-  // Cart temizle
-  cart.length = 0;
-
-  res.status(201).json({
-    message: "Sipariş oluşturuldu",
-    notification: "Siparişiniz alındı",
-    order: newOrder
-  });
+  const result = orderService.createOrder();
+  res.status(result.status).json(result.data);
 });
-
 // Sipariş durumunu güncelle
 router.put("/:id/status", (req, res) => {
   const id = Number(req.params.id);
