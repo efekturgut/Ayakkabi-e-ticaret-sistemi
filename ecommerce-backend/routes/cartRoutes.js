@@ -4,43 +4,26 @@ const router = express.Router();
 const cart = require("../data/cart");
 const products = require("../data/products");
 
-// Sepeti getir
 router.get("/", (req, res) => {
-  const totalPrice = cart.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, 0);
-
-  res.json({
-    items: cart,
-    totalPrice
-  });
+  res.json(cart);
 });
 
-// Sepete ürün ekle
-router.post("/add", (req, res) => {
+router.post("/", (req, res) => {
   const { productId, quantity } = req.body;
 
-  const product = products.find((p) => p.id === Number(productId));
+  if (!productId || !quantity) {
+    return res.status(400).json({ message: "productId ve quantity gerekli" });
+  }
+
+  const product = products.find((p) => p.id === productId);
 
   if (!product) {
     return res.status(404).json({ message: "Ürün bulunamadı" });
   }
 
-  if (!quantity || quantity <= 0) {
-    return res.status(400).json({ message: "Geçerli bir adet girin" });
-  }
-
-  if (quantity > product.stock) {
-    return res.status(400).json({ message: "Yeterli stok yok" });
-  }
-
-  const existingItem = cart.find((item) => item.productId === product.id);
+  const existingItem = cart.find((item) => item.productId === productId);
 
   if (existingItem) {
-    if (existingItem.quantity + quantity > product.stock) {
-      return res.status(400).json({ message: "Stok aşılıyor" });
-    }
-
     existingItem.quantity += quantity;
   } else {
     cart.push({
@@ -57,30 +40,18 @@ router.post("/add", (req, res) => {
   });
 });
 
-// Sepetten ürün sil
-router.delete("/remove/:productId", (req, res) => {
+router.delete("/:productId", (req, res) => {
   const productId = Number(req.params.productId);
-
   const index = cart.findIndex((item) => item.productId === productId);
 
   if (index === -1) {
-    return res.status(404).json({ message: "Ürün sepette yok" });
+    return res.status(404).json({ message: "Sepette ürün bulunamadı" });
   }
 
   cart.splice(index, 1);
 
   res.json({
     message: "Ürün sepetten silindi",
-    cart
-  });
-});
-
-// Sepeti temizle
-router.delete("/clear", (req, res) => {
-  cart.length = 0;
-
-  res.json({
-    message: "Sepet temizlendi",
     cart
   });
 });
