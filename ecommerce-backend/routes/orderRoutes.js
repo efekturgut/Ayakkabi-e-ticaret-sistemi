@@ -1,11 +1,12 @@
+
 const express = require("express");
 const router = express.Router();
 
-const orderService = require("../services/orderService");
-const cart = require("../data/cart");
-const orders = require("../data/orders");
-const products = require("../data/products");
+const orderController = require("../controllers/orderController");
 
+router.post("/", orderController.createOrder);
+
+module.exports = router;
 // Tüm siparişleri getir
 router.get("/", (req, res) => {
   res.json(orders);
