@@ -1,4 +1,5 @@
 const orderRepository = require("../repositories/orderRepository");
+const AppError = require("../utils/AppError");
 
 exports.getOrders = () => {
   const orders = orderRepository.getOrders();
@@ -13,28 +14,19 @@ exports.createOrder = () => {
   const cart = orderRepository.getCart();
 
   if (cart.length === 0) {
-    return {
-      status: 400,
-      data: { message: "Sepet boş" }
-    };
-  }
+  throw new AppError("Sepet boş", 400);
+}
+
 
   for (const item of cart) {
     const product = orderRepository.getProductById(item.productId);
 
-    if (!product) {
-      return {
-        status: 404,
-        data: { message: `Ürün bulunamadı. productId: ${item.productId}` }
-      };
-    }
-
-    if (product.stock < item.quantity) {
-      return {
-        status: 400,
-        data: { message: `${product.name} için stok yetersiz` }
-      };
-    }
+if (!product) {
+  throw new AppError(`Ürün bulunamadı. productId: ${item.productId}`, 404);
+}
+  if (product.stock < item.quantity) {
+  throw new AppError(`${product.name} için stok yetersiz`, 400);
+}
   }
 
   for (const item of cart) {
@@ -67,24 +59,17 @@ exports.createOrder = () => {
 exports.updateOrderStatus = (id, status) => {
   const order = orderRepository.getOrderById(id);
 
-  if (!order) {
-    return {
-      status: 404,
-      data: { message: "Sipariş bulunamadı" }
-    };
-  }
-
+if (!order) {
+  throw new AppError("Sipariş bulunamadı", 404);
+}
   const validStatuses = ["pending", "shipped", "delivered"];
 
-  if (!status || !validStatuses.includes(status)) {
-    return {
-      status: 400,
-      data: {
-        message: "Geçerli bir status girin: pending, shipped, delivered"
-      }
-    };
-  }
-
+ if (!status || !validStatuses.includes(status)) {
+  throw new AppError(
+    "Geçerli bir status girin: pending, shipped, delivered",
+    400
+  );
+}
   order.status = status;
 
   let notification = "";

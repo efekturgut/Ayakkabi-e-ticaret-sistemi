@@ -4,6 +4,7 @@ const app = express();
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const errorHandler = require("./middlewares/errorHandler");
 
 app.use(express.json());
 
@@ -14,6 +15,8 @@ app.get("/", (req, res) => {
 app.use("/products", productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
+
+app.use(errorHandler);
 
 const PORT = 4000;
 
