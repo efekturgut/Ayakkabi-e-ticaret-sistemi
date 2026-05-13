@@ -48,6 +48,9 @@ const getCartItemsForOrder = async (userId) => {
 const createOrder = async ({
   userId,
   totalPrice,
+  discountAmount,
+  finalPrice,
+  couponCode,
   customerName,
   customerEmail,
   customerPhone,
@@ -56,11 +59,32 @@ const createOrder = async ({
   const result = await pool.query(
     `
     INSERT INTO orders
-    (user_id, total_price, status, customer_name, customer_email, customer_phone, address)
-    VALUES ($1, $2, 'pending', $3, $4, $5, $6)
+    (
+      user_id,
+      total_price,
+      discount_amount,
+      final_price,
+      coupon_code,
+      status,
+      customer_name,
+      customer_email,
+      customer_phone,
+      address
+    )
+    VALUES ($1, $2, $3, $4, $5, 'pending', $6, $7, $8, $9)
     RETURNING *
     `,
-    [userId, totalPrice, customerName, customerEmail, customerPhone, address]
+    [
+      userId,
+      totalPrice,
+      discountAmount || 0,
+      finalPrice,
+      couponCode || null,
+      customerName,
+      customerEmail,
+      customerPhone,
+      address,
+    ]
   );
 
   return result.rows[0];
@@ -125,6 +149,9 @@ const getOrdersByUserId = async (userId) => {
     SELECT
       id,
       total_price AS "totalPrice",
+      discount_amount AS "discountAmount",
+      final_price AS "finalPrice",
+      coupon_code AS "couponCode",
       status,
       customer_name AS "customerName",
       customer_email AS "customerEmail",
@@ -149,6 +176,9 @@ const getAllOrdersForAdmin = async () => {
       u.name AS "userName",
       u.email AS "userEmail",
       o.total_price AS "totalPrice",
+      o.discount_amount AS "discountAmount",
+      o.final_price AS "finalPrice",
+      o.coupon_code AS "couponCode",
       o.status,
       o.customer_name AS "customerName",
       o.customer_email AS "customerEmail",
@@ -175,6 +205,9 @@ const getOrderById = async (userId, role, orderId) => {
         u.name AS "userName",
         u.email AS "userEmail",
         o.total_price AS "totalPrice",
+        o.discount_amount AS "discountAmount",
+        o.final_price AS "finalPrice",
+        o.coupon_code AS "couponCode",
         o.status,
         o.customer_name AS "customerName",
         o.customer_email AS "customerEmail",
@@ -194,6 +227,9 @@ const getOrderById = async (userId, role, orderId) => {
         id,
         user_id AS "userId",
         total_price AS "totalPrice",
+        discount_amount AS "discountAmount",
+        final_price AS "finalPrice",
+        coupon_code AS "couponCode",
         status,
         customer_name AS "customerName",
         customer_email AS "customerEmail",
@@ -249,6 +285,9 @@ const updateOrderStatus = async (orderId, status) => {
       id,
       user_id AS "userId",
       total_price AS "totalPrice",
+      discount_amount AS "discountAmount",
+      final_price AS "finalPrice",
+      coupon_code AS "couponCode",
       status,
       customer_name AS "customerName",
       customer_email AS "customerEmail",

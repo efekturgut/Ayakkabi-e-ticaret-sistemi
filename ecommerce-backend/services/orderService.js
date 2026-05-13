@@ -1,8 +1,10 @@
 const orderRepository = require("../repositories/orderRepository");
+const couponService = require("./couponService");
+const couponRepository = require("../repositories/couponRepository");
 
 const createOrderFromCart = async (
   userId,
-  { customerName, customerEmail, customerPhone, address }
+  { customerName, customerEmail, customerPhone, address, couponCode }
 ) => {
   if (!customerName || !customerEmail || !address) {
     const error = new Error("customerName, customerEmail ve address zorunludur");
@@ -30,9 +32,20 @@ const createOrderFromCart = async (
     return sum + Number(item.unitPrice) * Number(item.quantity);
   }, 0);
 
+  const couponResult = await couponService.calculateCouponDiscount(
+    couponCode,
+    totalPrice
+  );
+
+  const discountAmount = couponResult.discountAmount;
+  const finalPrice = couponResult.finalPrice;
+
   const order = await orderRepository.createOrder({
     userId,
     totalPrice,
+    discountAmount,
+    finalPrice,
+    couponCode: couponResult.coupon ? couponResult.coupon.code : null,
     customerName,
     customerEmail,
     customerPhone,
@@ -54,6 +67,10 @@ const createOrderFromCart = async (
     });
 
     await orderRepository.decreaseVariantStock(item.variantId, quantity);
+  }
+
+  if (couponResult.coupon) {
+    await couponRepository.increaseCouponUsage(couponResult.coupon.id);
   }
 
   await orderRepository.clearCart(userId);
@@ -89,7 +106,9 @@ const getOrderById = async (userId, role, orderId) => {
 
 const updateOrderStatus = async (role, orderId, status) => {
   if (role !== "admin") {
-    const error = new Error("Sipariş durumu güncellemek için admin yetkisi gerekli");
+    const error = new Error(
+      "Sipariş durumu güncellemek için admin yetkisi gerekli"
+    );
     error.statusCode = 403;
     throw error;
   }

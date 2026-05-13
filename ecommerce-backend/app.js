@@ -11,6 +11,7 @@ const kicksdbRoutes = require("./routes/kicksdbRoutes");
 const authRoutes = require("./routes/authRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const couponRoutes = require("./routes/couponRoutes");
 
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -27,6 +28,7 @@ app.use("/api/kicksdb", kicksdbRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api", reviewRoutes);
+app.use("/api/coupons", couponRoutes);
 
 app.use(errorHandler);
 
