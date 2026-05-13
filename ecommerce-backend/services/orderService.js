@@ -1,18 +1,16 @@
 const orderRepository = require("../repositories/orderRepository");
 
-const createOrderFromCart = async ({
-  customerName,
-  customerEmail,
-  customerPhone,
-  address,
-}) => {
+const createOrderFromCart = async (
+  userId,
+  { customerName, customerEmail, customerPhone, address }
+) => {
   if (!customerName || !customerEmail || !address) {
     const error = new Error("customerName, customerEmail ve address zorunludur");
     error.statusCode = 400;
     throw error;
   }
 
-  const cartItems = await orderRepository.getCartItemsForOrder();
+  const cartItems = await orderRepository.getCartItemsForOrder(userId);
 
   if (cartItems.length === 0) {
     const error = new Error("Sepet boş, sipariş oluşturulamaz");
@@ -33,6 +31,7 @@ const createOrderFromCart = async ({
   }, 0);
 
   const order = await orderRepository.createOrder({
+    userId,
     totalPrice,
     customerName,
     customerEmail,
@@ -57,23 +56,27 @@ const createOrderFromCart = async ({
     await orderRepository.decreaseVariantStock(item.variantId, quantity);
   }
 
-  await orderRepository.clearCart();
+  await orderRepository.clearCart(userId);
 
-  return await orderRepository.getOrderById(order.id);
+  return await orderRepository.getOrderById(userId, "user", order.id);
 };
 
-const getAllOrders = async () => {
-  return await orderRepository.getAllOrders();
+const getAllOrders = async (userId, role) => {
+  if (role === "admin") {
+    return await orderRepository.getAllOrdersForAdmin();
+  }
+
+  return await orderRepository.getOrdersByUserId(userId);
 };
 
-const getOrderById = async (orderId) => {
+const getOrderById = async (userId, role, orderId) => {
   if (!orderId || isNaN(orderId)) {
     const error = new Error("Geçerli bir sipariş ID gerekli");
     error.statusCode = 400;
     throw error;
   }
 
-  const order = await orderRepository.getOrderById(orderId);
+  const order = await orderRepository.getOrderById(userId, role, orderId);
 
   if (!order) {
     const error = new Error("Sipariş bulunamadı");
@@ -84,7 +87,13 @@ const getOrderById = async (orderId) => {
   return order;
 };
 
-const updateOrderStatus = async (orderId, status) => {
+const updateOrderStatus = async (role, orderId, status) => {
+  if (role !== "admin") {
+    const error = new Error("Sipariş durumu güncellemek için admin yetkisi gerekli");
+    error.statusCode = 403;
+    throw error;
+  }
+
   const allowedStatuses = [
     "pending",
     "confirmed",

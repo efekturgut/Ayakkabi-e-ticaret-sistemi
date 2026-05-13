@@ -2,7 +2,7 @@ const orderService = require("../services/orderService");
 
 const createOrder = async (req, res, next) => {
   try {
-    const order = await orderService.createOrderFromCart(req.body);
+    const order = await orderService.createOrderFromCart(req.user.id, req.body);
 
     res.status(201).json({
       message: "Sipariş başarıyla oluşturuldu",
@@ -15,7 +15,7 @@ const createOrder = async (req, res, next) => {
 
 const getAllOrders = async (req, res, next) => {
   try {
-    const orders = await orderService.getAllOrders();
+    const orders = await orderService.getAllOrders(req.user.id, req.user.role);
     res.json(orders);
   } catch (error) {
     next(error);
@@ -24,7 +24,12 @@ const getAllOrders = async (req, res, next) => {
 
 const getOrderById = async (req, res, next) => {
   try {
-    const order = await orderService.getOrderById(Number(req.params.id));
+    const order = await orderService.getOrderById(
+      req.user.id,
+      req.user.role,
+      Number(req.params.id)
+    );
+
     res.json(order);
   } catch (error) {
     next(error);
@@ -34,6 +39,7 @@ const getOrderById = async (req, res, next) => {
 const updateOrderStatus = async (req, res, next) => {
   try {
     const order = await orderService.updateOrderStatus(
+      req.user.role,
       Number(req.params.id),
       req.body.status
     );

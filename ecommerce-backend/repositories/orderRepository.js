@@ -1,18 +1,22 @@
 const pool = require("../config/db");
 
-const getDefaultCart = async () => {
-  const result = await pool.query(`
-    SELECT * FROM carts
-    WHERE user_id IS NULL
+const getUserCart = async (userId) => {
+  const result = await pool.query(
+    `
+    SELECT *
+    FROM carts
+    WHERE user_id = $1
     ORDER BY id ASC
     LIMIT 1
-  `);
+    `,
+    [userId]
+  );
 
   return result.rows[0];
 };
 
-const getCartItemsForOrder = async () => {
-  const cart = await getDefaultCart();
+const getCartItemsForOrder = async (userId) => {
+  const cart = await getUserCart(userId);
 
   if (!cart) {
     return [];
@@ -42,6 +46,7 @@ const getCartItemsForOrder = async () => {
 };
 
 const createOrder = async ({
+  userId,
   totalPrice,
   customerName,
   customerEmail,
@@ -52,10 +57,10 @@ const createOrder = async ({
     `
     INSERT INTO orders
     (user_id, total_price, status, customer_name, customer_email, customer_phone, address)
-    VALUES (NULL, $1, 'pending', $2, $3, $4, $5)
+    VALUES ($1, $2, 'pending', $3, $4, $5, $6)
     RETURNING *
     `,
-    [totalPrice, customerName, customerEmail, customerPhone, address]
+    [userId, totalPrice, customerName, customerEmail, customerPhone, address]
   );
 
   return result.rows[0];
@@ -96,8 +101,8 @@ const decreaseVariantStock = async (variantId, quantity) => {
   return result.rows[0];
 };
 
-const clearCart = async () => {
-  const cart = await getDefaultCart();
+const clearCart = async (userId) => {
+  const cart = await getUserCart(userId);
 
   if (!cart) {
     return true;
@@ -114,26 +119,8 @@ const clearCart = async () => {
   return true;
 };
 
-const getAllOrders = async () => {
-  const result = await pool.query(`
-    SELECT
-      id,
-      total_price AS "totalPrice",
-      status,
-      customer_name AS "customerName",
-      customer_email AS "customerEmail",
-      customer_phone AS "customerPhone",
-      address,
-      created_at AS "createdAt"
-    FROM orders
-    ORDER BY id DESC
-  `);
-
-  return result.rows;
-};
-
-const getOrderById = async (orderId) => {
-  const orderResult = await pool.query(
+const getOrdersByUserId = async (userId) => {
+  const result = await pool.query(
     `
     SELECT
       id,
@@ -145,10 +132,80 @@ const getOrderById = async (orderId) => {
       address,
       created_at AS "createdAt"
     FROM orders
-    WHERE id = $1
+    WHERE user_id = $1
+    ORDER BY id DESC
     `,
-    [orderId]
+    [userId]
   );
+
+  return result.rows;
+};
+
+const getAllOrdersForAdmin = async () => {
+  const result = await pool.query(`
+    SELECT
+      o.id,
+      o.user_id AS "userId",
+      u.name AS "userName",
+      u.email AS "userEmail",
+      o.total_price AS "totalPrice",
+      o.status,
+      o.customer_name AS "customerName",
+      o.customer_email AS "customerEmail",
+      o.customer_phone AS "customerPhone",
+      o.address,
+      o.created_at AS "createdAt"
+    FROM orders o
+    LEFT JOIN users u ON u.id = o.user_id
+    ORDER BY o.id DESC
+  `);
+
+  return result.rows;
+};
+
+const getOrderById = async (userId, role, orderId) => {
+  let orderResult;
+
+  if (role === "admin") {
+    orderResult = await pool.query(
+      `
+      SELECT
+        o.id,
+        o.user_id AS "userId",
+        u.name AS "userName",
+        u.email AS "userEmail",
+        o.total_price AS "totalPrice",
+        o.status,
+        o.customer_name AS "customerName",
+        o.customer_email AS "customerEmail",
+        o.customer_phone AS "customerPhone",
+        o.address,
+        o.created_at AS "createdAt"
+      FROM orders o
+      LEFT JOIN users u ON u.id = o.user_id
+      WHERE o.id = $1
+      `,
+      [orderId]
+    );
+  } else {
+    orderResult = await pool.query(
+      `
+      SELECT
+        id,
+        user_id AS "userId",
+        total_price AS "totalPrice",
+        status,
+        customer_name AS "customerName",
+        customer_email AS "customerEmail",
+        customer_phone AS "customerPhone",
+        address,
+        created_at AS "createdAt"
+      FROM orders
+      WHERE id = $1 AND user_id = $2
+      `,
+      [orderId, userId]
+    );
+  }
 
   const order = orderResult.rows[0];
 
@@ -190,6 +247,7 @@ const updateOrderStatus = async (orderId, status) => {
     WHERE id = $2
     RETURNING
       id,
+      user_id AS "userId",
       total_price AS "totalPrice",
       status,
       customer_name AS "customerName",
@@ -210,7 +268,8 @@ module.exports = {
   createOrderItem,
   decreaseVariantStock,
   clearCart,
-  getAllOrders,
+  getOrdersByUserId,
+  getAllOrdersForAdmin,
   getOrderById,
   updateOrderStatus,
 };
