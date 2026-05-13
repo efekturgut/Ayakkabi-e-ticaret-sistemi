@@ -77,6 +77,69 @@ const deleteProduct = async (id) => {
 
   return product;
 };
+
+const createProductVariant = async (productId, { size, stock, sku }) => {
+  if (!productId || isNaN(productId)) {
+    const error = new Error("Geçerli bir ürün ID gerekli");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!size) {
+    const error = new Error("Numara bilgisi zorunludur");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const variant = await productRepository.createProductVariant({
+    productId,
+    size,
+    stock: stock || 0,
+    sku,
+  });
+
+  return variant;
+};
+
+const updateProductVariant = async (variantId, { size, stock, sku }) => {
+  if (!variantId || isNaN(variantId)) {
+    const error = new Error("Geçerli bir varyant ID gerekli");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const variant = await productRepository.updateProductVariant(variantId, {
+    size,
+    stock,
+    sku,
+  });
+
+  if (!variant) {
+    const error = new Error("Ürün varyantı bulunamadı");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return variant;
+};
+
+const deleteProductVariant = async (variantId) => {
+  if (!variantId || isNaN(variantId)) {
+    const error = new Error("Geçerli bir varyant ID gerekli");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const variant = await productRepository.deleteProductVariant(variantId);
+
+  if (!variant) {
+    const error = new Error("Ürün varyantı bulunamadı");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return variant;
+};
 module.exports = {
   getAllProducts,
   getProductById,
@@ -84,4 +147,7 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  createProductVariant,
+updateProductVariant,
+deleteProductVariant,
 };

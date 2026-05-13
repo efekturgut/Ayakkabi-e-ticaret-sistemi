@@ -208,7 +208,60 @@ const deleteProduct = async (id) => {
   return result.rows[0];
 };
 
+
+const createProductVariant = async ({ productId, size, stock, sku }) => {
+  const finalSku = sku || `PRODUCT-${productId}-SIZE-${size}`;
+
+  const result = await pool.query(
+    `
+    INSERT INTO product_variants (product_id, size, stock, sku)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+    `,
+    [productId, size, stock, finalSku]
+  );
+
+  return result.rows[0];
+};
+
+const updateProductVariant = async (variantId, { size, stock, sku }) => {
+  const result = await pool.query(
+    `
+    UPDATE product_variants
+    SET
+      size = COALESCE($1, size),
+      stock = COALESCE($2, stock),
+      sku = COALESCE($3, sku)
+    WHERE id = $4
+    RETURNING *
+    `,
+    [
+      size || null,
+      stock === undefined ? null : stock,
+      sku || null,
+      variantId,
+    ]
+  );
+
+  return result.rows[0];
+};
+
+const deleteProductVariant = async (variantId) => {
+  const result = await pool.query(
+    `
+    DELETE FROM product_variants
+    WHERE id = $1
+    RETURNING *
+    `,
+    [variantId]
+  );
+
+  return result.rows[0];
+};
 module.exports = {
+  createProductVariant,
+updateProductVariant,
+deleteProductVariant,
   getAllProducts,
   getProductById,
   searchProducts,

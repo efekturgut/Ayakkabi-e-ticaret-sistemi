@@ -69,7 +69,57 @@ const deleteProduct = async (req, res, next) => {
     next(error);
   }
 };
+
+const createProductVariant = async (req, res, next) => {
+  try {
+    const variant = await productService.createProductVariant(
+      Number(req.params.productId),
+      req.body
+    );
+
+    res.status(201).json({
+      message: "Ürün varyantı oluşturuldu",
+      variant,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateProductVariant = async (req, res, next) => {
+  try {
+    const variant = await productService.updateProductVariant(
+      Number(req.params.variantId),
+      req.body
+    );
+
+    res.json({
+      message: "Ürün varyantı güncellendi",
+      variant,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteProductVariant = async (req, res, next) => {
+  try {
+    const variant = await productService.deleteProductVariant(
+      Number(req.params.variantId)
+    );
+
+    res.json({
+      message: "Ürün varyantı silindi",
+      variant,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = {
+  createProductVariant,
+updateProductVariant,
+deleteProductVariant,
   getAllProducts,
   getProductById,
   searchProducts,
