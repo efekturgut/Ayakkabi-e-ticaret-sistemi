@@ -1,31 +1,55 @@
 const orderService = require("../services/orderService");
 
-exports.getOrders = (req, res, next) => {
+const createOrder = async (req, res, next) => {
   try {
-    const result = orderService.getOrders();
-    res.status(result.status).json(result.data);
+    const order = await orderService.createOrderFromCart(req.body);
+
+    res.status(201).json({
+      message: "Sipariş başarıyla oluşturuldu",
+      order,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-exports.createOrder = (req, res, next) => {
+const getAllOrders = async (req, res, next) => {
   try {
-    const result = orderService.createOrder();
-    res.status(result.status).json(result.data);
+    const orders = await orderService.getAllOrders();
+    res.json(orders);
   } catch (error) {
     next(error);
   }
 };
 
-exports.updateOrderStatus = (req, res, next) => {
+const getOrderById = async (req, res, next) => {
   try {
-    const id = Number(req.params.id);
-    const { status } = req.body;
-
-    const result = orderService.updateOrderStatus(id, status);
-    res.status(result.status).json(result.data);
+    const order = await orderService.getOrderById(Number(req.params.id));
+    res.json(order);
   } catch (error) {
     next(error);
   }
+};
+
+const updateOrderStatus = async (req, res, next) => {
+  try {
+    const order = await orderService.updateOrderStatus(
+      Number(req.params.id),
+      req.body.status
+    );
+
+    res.json({
+      message: "Sipariş durumu güncellendi",
+      order,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createOrder,
+  getAllOrders,
+  getOrderById,
+  updateOrderStatus,
 };

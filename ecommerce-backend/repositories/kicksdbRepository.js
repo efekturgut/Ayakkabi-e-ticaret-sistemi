@@ -39,7 +39,25 @@ const findOrCreateCategory = async (categoryName) => {
 
   return newCategory.rows[0].id;
 };
+const createDefaultVariantsForProduct = async (productId, productName) => {
+  const sizes = ["38", "39", "40", "41", "42", "43", "44", "45"];
 
+  for (const size of sizes) {
+    const sku = `${productName
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "-")
+      .slice(0, 30)}-${productId}-${size}`;
+
+    await pool.query(
+      `
+      INSERT INTO product_variants (product_id, size, stock, sku)
+      VALUES ($1, $2, $3, $4)
+      ON CONFLICT (sku) DO NOTHING
+      `,
+      [productId, size, Math.floor(Math.random() * 10) + 1, sku]
+    );
+  }
+};
 const createProductFromKicksDB = async (product) => {
   const brandId = await findOrCreateBrand(product.brand);
   const categoryId = await findOrCreateCategory("Sneaker");
@@ -124,9 +142,14 @@ const createProductFromKicksDB = async (product) => {
     ]
   );
 
-  return result.rows[0];
+ const createdProduct = result.rows[0];
+
+await createDefaultVariantsForProduct(createdProduct.id, createdProduct.name);
+
+return createdProduct;
 };
 
 module.exports = {
   createProductFromKicksDB,
+  createDefaultVariantsForProduct,
 };

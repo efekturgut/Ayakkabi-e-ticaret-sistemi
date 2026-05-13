@@ -1,93 +1,119 @@
 const orderRepository = require("../repositories/orderRepository");
-const AppError = require("../utils/AppError");
 
-exports.getOrders = () => {
-  const orders = orderRepository.getOrders();
-
-  return {
-    status: 200,
-    data: orders
-  };
-};
-
-exports.createOrder = () => {
-  const cart = orderRepository.getCart();
-
-  if (cart.length === 0) {
-  throw new AppError("Sepet boş", 400);
-}
-
-
-  for (const item of cart) {
-    const product = orderRepository.getProductById(item.productId);
-
-if (!product) {
-  throw new AppError(`Ürün bulunamadı. productId: ${item.productId}`, 404);
-}
-  if (product.stock < item.quantity) {
-  throw new AppError(`${product.name} için stok yetersiz`, 400);
-}
+const createOrderFromCart = async ({
+  customerName,
+  customerEmail,
+  customerPhone,
+  address,
+}) => {
+  if (!customerName || !customerEmail || !address) {
+    const error = new Error("customerName, customerEmail ve address zorunludur");
+    error.statusCode = 400;
+    throw error;
   }
 
-  for (const item of cart) {
-    orderRepository.updateProductStock(item.productId, item.quantity);
+  const cartItems = await orderRepository.getCartItemsForOrder();
+
+  if (cartItems.length === 0) {
+    const error = new Error("Sepet boş, sipariş oluşturulamaz");
+    error.statusCode = 400;
+    throw error;
   }
 
-  const totalPrice = cart.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
+  for (const item of cartItems) {
+    if (Number(item.stock) < Number(item.quantity)) {
+      const error = new Error(`${item.name} için yeterli stok yok`);
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
+  const totalPrice = cartItems.reduce((sum, item) => {
+    return sum + Number(item.unitPrice) * Number(item.quantity);
   }, 0);
 
-  const newOrder = {
-    id: Date.now(),
-    items: [...cart],
+  const order = await orderRepository.createOrder({
     totalPrice,
-    status: "pending"
-  };
+    customerName,
+    customerEmail,
+    customerPhone,
+    address,
+  });
 
-  orderRepository.saveOrder(newOrder);
-  orderRepository.clearCart();
+  for (const item of cartItems) {
+    const unitPrice = Number(item.unitPrice);
+    const quantity = Number(item.quantity);
+    const itemTotalPrice = unitPrice * quantity;
 
-  return {
-    status: 201,
-    data: {
-      message: "Sipariş oluşturuldu",
-      order: newOrder
-    }
-  };
-};
+    await orderRepository.createOrderItem({
+      orderId: order.id,
+      productId: item.productId,
+      variantId: item.variantId,
+      quantity,
+      unitPrice,
+      totalPrice: itemTotalPrice,
+    });
 
-exports.updateOrderStatus = (id, status) => {
-  const order = orderRepository.getOrderById(id);
-
-if (!order) {
-  throw new AppError("Sipariş bulunamadı", 404);
-}
-  const validStatuses = ["pending", "shipped", "delivered"];
-
- if (!status || !validStatuses.includes(status)) {
-  throw new AppError(
-    "Geçerli bir status girin: pending, shipped, delivered",
-    400
-  );
-}
-  order.status = status;
-
-  let notification = "";
-
-  if (status === "pending") {
-    notification = "Siparişiniz alındı";
-  } else if (status === "shipped") {
-    notification = "Siparişiniz kargoya verildi";
-  } else if (status === "delivered") {
-    notification = "Siparişiniz teslim edildi";
+    await orderRepository.decreaseVariantStock(item.variantId, quantity);
   }
 
-  return {
-    status: 200,
-    data: {
-      message: "Sipariş durumu güncellendi",
-      notification,
-      order
-    }
-  };
+  await orderRepository.clearCart();
+
+  return await orderRepository.getOrderById(order.id);
+};
+
+const getAllOrders = async () => {
+  return await orderRepository.getAllOrders();
+};
+
+const getOrderById = async (orderId) => {
+  if (!orderId || isNaN(orderId)) {
+    const error = new Error("Geçerli bir sipariş ID gerekli");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const order = await orderRepository.getOrderById(orderId);
+
+  if (!order) {
+    const error = new Error("Sipariş bulunamadı");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return order;
+};
+
+const updateOrderStatus = async (orderId, status) => {
+  const allowedStatuses = [
+    "pending",
+    "confirmed",
+    "preparing",
+    "shipped",
+    "delivered",
+    "cancelled",
+  ];
+
+  if (!allowedStatuses.includes(status)) {
+    const error = new Error("Geçersiz sipariş durumu");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const updatedOrder = await orderRepository.updateOrderStatus(orderId, status);
+
+  if (!updatedOrder) {
+    const error = new Error("Sipariş bulunamadı");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return updatedOrder;
+};
+
+module.exports = {
+  createOrderFromCart,
+  getAllOrders,
+  getOrderById,
+  updateOrderStatus,
 };
