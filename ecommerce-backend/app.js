@@ -12,6 +12,7 @@ const authRoutes = require("./routes/authRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const couponRoutes = require("./routes/couponRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api", reviewRoutes);
 app.use("/api/coupons", couponRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use(errorHandler);
 
