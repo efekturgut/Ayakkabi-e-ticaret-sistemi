@@ -1,9 +1,8 @@
 const productRepository = require("../repositories/productRepository");
 
-const getAllProducts = async () => {
-  return await productRepository.getAllProducts();
+const getAllProducts = async (filters) => {
+  return await productRepository.getAllProducts(filters);
 };
-
 const getProductById = async (id) => {
   if (!id || isNaN(id)) {
     const error = new Error("Geçerli bir ürün ID gerekli");

@@ -1,7 +1,72 @@
 const pool = require("../config/db");
+const getAllProducts = async (filters = {}) => {
+  const {
+    search,
+    brand,
+    category,
+    size,
+    minPrice,
+    maxPrice,
+    page = 1,
+    limit = 12,
+  } = filters;
 
-const getAllProducts = async () => {
-  const result = await pool.query(`
+  const pageNumber = Number(page) || 1;
+  const limitNumber = Number(limit) || 12;
+  const offset = (pageNumber - 1) * limitNumber;
+
+  const whereConditions = ["p.is_active = true"];
+  const values = [];
+  let paramIndex = 1;
+
+  if (search) {
+    whereConditions.push(`LOWER(p.name) LIKE LOWER($${paramIndex})`);
+    values.push(`%${search}%`);
+    paramIndex++;
+  }
+
+  if (brand) {
+    whereConditions.push(`LOWER(b.name) = LOWER($${paramIndex})`);
+    values.push(brand);
+    paramIndex++;
+  }
+
+  if (category) {
+    whereConditions.push(`LOWER(c.name) = LOWER($${paramIndex})`);
+    values.push(category);
+    paramIndex++;
+  }
+
+  if (minPrice) {
+    whereConditions.push(`COALESCE(p.discount_price, p.price) >= $${paramIndex}`);
+    values.push(Number(minPrice));
+    paramIndex++;
+  }
+
+  if (maxPrice) {
+    whereConditions.push(`COALESCE(p.discount_price, p.price) <= $${paramIndex}`);
+    values.push(Number(maxPrice));
+    paramIndex++;
+  }
+
+  if (size) {
+    whereConditions.push(`
+      EXISTS (
+        SELECT 1
+        FROM product_variants pv_size
+        WHERE pv_size.product_id = p.id
+        AND pv_size.size = $${paramIndex}
+        AND pv_size.stock > 0
+      )
+    `);
+    values.push(size);
+    paramIndex++;
+  }
+
+  const whereClause = whereConditions.join(" AND ");
+
+  const productsResult = await pool.query(
+    `
     SELECT 
       p.id,
       p.name,
@@ -22,6 +87,7 @@ const getAllProducts = async () => {
             'stock', pv.stock,
             'sku', pv.sku
           )
+          ORDER BY pv.size
         ) FILTER (WHERE pv.id IS NOT NULL),
         '[]'
       ) AS variants
@@ -29,12 +95,40 @@ const getAllProducts = async () => {
     LEFT JOIN brands b ON b.id = p.brand_id
     LEFT JOIN categories c ON c.id = p.category_id
     LEFT JOIN product_variants pv ON pv.product_id = p.id
-    WHERE p.is_active = true
+    WHERE ${whereClause}
     GROUP BY p.id, b.name, c.name
     ORDER BY p.id DESC
-  `);
+    LIMIT $${paramIndex}
+    OFFSET $${paramIndex + 1}
+    `,
+    [...values, limitNumber, offset]
+  );
 
-  return result.rows;
+  const countResult = await pool.query(
+    `
+    SELECT COUNT(DISTINCT p.id) AS total
+    FROM products p
+    LEFT JOIN brands b ON b.id = p.brand_id
+    LEFT JOIN categories c ON c.id = p.category_id
+    WHERE ${whereClause}
+    `,
+    values
+  );
+
+  const total = Number(countResult.rows[0].total);
+  const totalPages = Math.ceil(total / limitNumber);
+
+  return {
+    products: productsResult.rows,
+    pagination: {
+      total,
+      page: pageNumber,
+      limit: limitNumber,
+      totalPages,
+      hasNextPage: pageNumber < totalPages,
+      hasPrevPage: pageNumber > 1,
+    },
+  };
 };
 
 const getProductById = async (id) => {
