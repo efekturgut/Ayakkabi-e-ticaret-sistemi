@@ -7,6 +7,8 @@ const app = express();
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const kicksdbRoutes = require("./routes/kicksdbRoutes");
+
 const errorHandler = require("./middlewares/errorHandler");
 
 app.use(express.json());
@@ -18,6 +20,7 @@ app.get("/", (req, res) => {
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/kicksdb", kicksdbRoutes);
 
 app.use(errorHandler);
 
