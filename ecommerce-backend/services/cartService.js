@@ -1,7 +1,7 @@
 const cartRepository = require("../repositories/cartRepository");
 
-const getCart = async () => {
-  const items = await cartRepository.getCartItems();
+const getCart = async (userId) => {
+  const items = await cartRepository.getCartItems(userId);
 
   const cartTotal = items.reduce((sum, item) => {
     return sum + Number(item.totalPrice);
@@ -13,7 +13,7 @@ const getCart = async () => {
   };
 };
 
-const addItemToCart = async ({ productId, variantId, quantity }) => {
+const addItemToCart = async (userId, { productId, variantId, quantity }) => {
   if (!productId || !variantId) {
     const error = new Error("productId ve variantId zorunludur");
     error.statusCode = 400;
@@ -43,15 +43,16 @@ const addItemToCart = async ({ productId, variantId, quantity }) => {
   }
 
   await cartRepository.addItemToCart({
+    userId,
     productId,
     variantId,
     quantity: itemQuantity,
   });
 
-  return await getCart();
+  return await getCart(userId);
 };
 
-const updateCartItemQuantity = async (cartItemId, quantity) => {
+const updateCartItemQuantity = async (userId, cartItemId, quantity) => {
   if (!quantity || quantity < 1) {
     const error = new Error("Geçerli bir adet giriniz");
     error.statusCode = 400;
@@ -59,6 +60,7 @@ const updateCartItemQuantity = async (cartItemId, quantity) => {
   }
 
   const updatedItem = await cartRepository.updateCartItemQuantity(
+    userId,
     cartItemId,
     quantity
   );
@@ -69,11 +71,11 @@ const updateCartItemQuantity = async (cartItemId, quantity) => {
     throw error;
   }
 
-  return await getCart();
+  return await getCart(userId);
 };
 
-const removeCartItem = async (cartItemId) => {
-  const deletedItem = await cartRepository.removeCartItem(cartItemId);
+const removeCartItem = async (userId, cartItemId) => {
+  const deletedItem = await cartRepository.removeCartItem(userId, cartItemId);
 
   if (!deletedItem) {
     const error = new Error("Sepet ürünü bulunamadı");
@@ -81,11 +83,11 @@ const removeCartItem = async (cartItemId) => {
     throw error;
   }
 
-  return await getCart();
+  return await getCart(userId);
 };
 
-const clearCart = async () => {
-  await cartRepository.clearCart();
+const clearCart = async (userId) => {
+  await cartRepository.clearCart(userId);
 
   return {
     items: [],

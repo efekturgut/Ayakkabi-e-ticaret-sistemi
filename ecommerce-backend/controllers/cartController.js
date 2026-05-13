@@ -2,7 +2,7 @@ const cartService = require("../services/cartService");
 
 const getCart = async (req, res, next) => {
   try {
-    const cart = await cartService.getCart();
+    const cart = await cartService.getCart(req.user.id);
     res.json(cart);
   } catch (error) {
     next(error);
@@ -11,7 +11,8 @@ const getCart = async (req, res, next) => {
 
 const addItemToCart = async (req, res, next) => {
   try {
-    const cart = await cartService.addItemToCart(req.body);
+    const cart = await cartService.addItemToCart(req.user.id, req.body);
+
     res.status(201).json({
       message: "Ürün sepete eklendi",
       cart,
@@ -24,6 +25,7 @@ const addItemToCart = async (req, res, next) => {
 const updateCartItemQuantity = async (req, res, next) => {
   try {
     const cart = await cartService.updateCartItemQuantity(
+      req.user.id,
       Number(req.params.itemId),
       Number(req.body.quantity)
     );
@@ -39,7 +41,10 @@ const updateCartItemQuantity = async (req, res, next) => {
 
 const removeCartItem = async (req, res, next) => {
   try {
-    const cart = await cartService.removeCartItem(Number(req.params.itemId));
+    const cart = await cartService.removeCartItem(
+      req.user.id,
+      Number(req.params.itemId)
+    );
 
     res.json({
       message: "Ürün sepetten silindi",
@@ -52,7 +57,7 @@ const removeCartItem = async (req, res, next) => {
 
 const clearCart = async (req, res, next) => {
   try {
-    const cart = await cartService.clearCart();
+    const cart = await cartService.clearCart(req.user.id);
 
     res.json({
       message: "Sepet temizlendi",

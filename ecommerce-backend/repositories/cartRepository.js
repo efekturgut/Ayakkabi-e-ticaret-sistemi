@@ -1,28 +1,35 @@
 const pool = require("../config/db");
 
-const getDefaultCart = async () => {
-  const existingCart = await pool.query(`
-    SELECT * FROM carts
-    WHERE user_id IS NULL
+const getOrCreateCart = async (userId) => {
+  const existingCart = await pool.query(
+    `
+    SELECT *
+    FROM carts
+    WHERE user_id = $1
     ORDER BY id ASC
     LIMIT 1
-  `);
+    `,
+    [userId]
+  );
 
   if (existingCart.rows.length > 0) {
     return existingCart.rows[0];
   }
 
-  const newCart = await pool.query(`
+  const newCart = await pool.query(
+    `
     INSERT INTO carts (user_id)
-    VALUES (NULL)
+    VALUES ($1)
     RETURNING *
-  `);
+    `,
+    [userId]
+  );
 
   return newCart.rows[0];
 };
 
-const getCartItems = async () => {
-  const cart = await getDefaultCart();
+const getCartItems = async (userId) => {
+  const cart = await getOrCreateCart(userId);
 
   const result = await pool.query(
     `
@@ -53,8 +60,8 @@ const getCartItems = async () => {
   return result.rows;
 };
 
-const addItemToCart = async ({ productId, variantId, quantity }) => {
-  const cart = await getDefaultCart();
+const addItemToCart = async ({ userId, productId, variantId, quantity }) => {
+  const cart = await getOrCreateCart(userId);
 
   const result = await pool.query(
     `
@@ -70,35 +77,39 @@ const addItemToCart = async ({ productId, variantId, quantity }) => {
   return result.rows[0];
 };
 
-const updateCartItemQuantity = async (cartItemId, quantity) => {
+const updateCartItemQuantity = async (userId, cartItemId, quantity) => {
+  const cart = await getOrCreateCart(userId);
+
   const result = await pool.query(
     `
     UPDATE cart_items
     SET quantity = $1
-    WHERE id = $2
+    WHERE id = $2 AND cart_id = $3
     RETURNING *
     `,
-    [quantity, cartItemId]
+    [quantity, cartItemId, cart.id]
   );
 
   return result.rows[0];
 };
 
-const removeCartItem = async (cartItemId) => {
+const removeCartItem = async (userId, cartItemId) => {
+  const cart = await getOrCreateCart(userId);
+
   const result = await pool.query(
     `
     DELETE FROM cart_items
-    WHERE id = $1
+    WHERE id = $1 AND cart_id = $2
     RETURNING *
     `,
-    [cartItemId]
+    [cartItemId, cart.id]
   );
 
   return result.rows[0];
 };
 
-const clearCart = async () => {
-  const cart = await getDefaultCart();
+const clearCart = async (userId) => {
+  const cart = await getOrCreateCart(userId);
 
   await pool.query(
     `
@@ -131,4 +142,5 @@ module.exports = {
   removeCartItem,
   clearCart,
   getVariantById,
+  getOrCreateCart,
 };
