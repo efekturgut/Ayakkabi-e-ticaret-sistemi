@@ -1,13 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logout();
     window.location.href = "/";
   };
 
@@ -22,7 +21,7 @@ const Navbar = () => {
           <NavLink to="/">Home</NavLink>
           <NavLink to="/products">Products</NavLink>
 
-          {token && (
+          {isAuthenticated && (
             <>
               <NavLink to="/cart">Cart</NavLink>
               <NavLink to="/favorites">Favorites</NavLink>
@@ -30,11 +29,11 @@ const Navbar = () => {
             </>
           )}
 
-          {user?.role === "admin" && <NavLink to="/admin">Admin</NavLink>}
+          {isAuthenticated && isAdmin && <NavLink to="/admin">Admin</NavLink>}
         </nav>
 
         <div className="navbar__actions">
-          {!token ? (
+          {!isAuthenticated ? (
             <>
               <Link to="/login" className="navbar__login">
                 Login
@@ -45,9 +44,12 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            <button onClick={handleLogout} className="navbar__logout">
-              Logout
-            </button>
+            <>
+              <span className="navbar__user">{user?.name}</span>
+              <button onClick={handleLogout} className="navbar__logout">
+                Logout
+              </button>
+            </>
           )}
         </div>
       </div>

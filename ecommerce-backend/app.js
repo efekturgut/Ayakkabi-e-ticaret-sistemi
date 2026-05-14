@@ -1,8 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 require("./config/db");
 
 const app = express();
+
 
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
@@ -16,6 +18,7 @@ const adminRoutes = require("./routes/adminRoutes");
 
 const errorHandler = require("./middlewares/errorHandler");
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {

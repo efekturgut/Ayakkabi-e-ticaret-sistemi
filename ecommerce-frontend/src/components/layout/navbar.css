@@ -1,62 +1,86 @@
 .navbar {
-  background: #111;
+  background: rgba(13, 13, 13, 0.94);
   color: white;
   position: sticky;
   top: 0;
   z-index: 20;
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .navbar__inner {
-  height: 72px;
+  height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .navbar__logo {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  font-size: 26px;
+  font-weight: 950;
+  letter-spacing: -1px;
+}
+
+.navbar__logo::after {
+  content: ".";
+  color: var(--accent);
 }
 
 .navbar__links {
   display: flex;
-  gap: 20px;
+  gap: 22px;
   align-items: center;
 }
 
 .navbar__links a {
-  color: #d6d6d6;
-  font-weight: 600;
+  color: #cfcfcf;
+  font-weight: 700;
   font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.navbar__links a:hover {
+  color: white;
 }
 
 .navbar__links a.active {
-  color: white;
+  color: var(--accent);
 }
 
 .navbar__actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .navbar__login {
   color: white;
-  font-weight: 600;
+  font-weight: 800;
 }
 
 .navbar__register,
 .navbar__logout {
   border: none;
-  background: white;
+  background: var(--accent);
   color: #111;
-  padding: 9px 14px;
+  padding: 10px 16px;
   border-radius: 999px;
+  font-weight: 900;
+  transition: 0.2s ease;
+}
+
+.navbar__register:hover,
+.navbar__logout:hover {
+  transform: translateY(-1px);
+}
+
+.navbar__user {
+  font-size: 14px;
+  color: #d6d6d6;
   font-weight: 700;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .navbar__inner {
     height: auto;
     padding: 16px 0;
@@ -67,5 +91,6 @@
   .navbar__links {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 14px;
   }
 }

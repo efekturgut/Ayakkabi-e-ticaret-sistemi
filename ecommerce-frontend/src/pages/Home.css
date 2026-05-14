@@ -1,0 +1,200 @@
+.hero {
+  min-height: calc(100vh - 76px);
+  background:
+    radial-gradient(circle at 80% 20%, rgba(215, 255, 63, 0.32), transparent 28%),
+    linear-gradient(135deg, #101010 0%, #1d1d1d 55%, #050505 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr;
+  align-items: center;
+  gap: 60px;
+  padding: 70px 0;
+}
+
+.hero__badge {
+  display: inline-flex;
+  background: rgba(215, 255, 63, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(215, 255, 63, 0.35);
+  padding: 9px 13px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 13px;
+  margin-bottom: 22px;
+}
+
+.hero h1 {
+  font-size: clamp(54px, 8vw, 104px);
+  line-height: 0.92;
+  letter-spacing: -4px;
+  margin-bottom: 24px;
+}
+
+.hero p {
+  color: #cfcfcf;
+  max-width: 590px;
+  line-height: 1.8;
+  font-size: 17px;
+  margin-bottom: 28px;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero__outline {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.hero__outline:hover {
+  background: white;
+  color: #111;
+}
+
+.hero__visual {
+  position: relative;
+  min-height: 460px;
+}
+
+.shoe-card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  border-radius: 34px;
+}
+
+.shoe-card--main {
+  inset: 40px 30px 50px 10px;
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.shoe-card--main::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 150px;
+  background: var(--accent);
+  border-radius: 999px;
+  transform: rotate(-22deg);
+  top: 92px;
+  left: 95px;
+  filter: blur(1px);
+}
+
+.shoe-card--main::after {
+  content: "KicksHub";
+  position: absolute;
+  top: 135px;
+  left: 112px;
+  color: #111;
+  font-size: 46px;
+  font-weight: 950;
+  letter-spacing: -2px;
+  transform: rotate(-22deg);
+}
+
+.shoe-card--main span {
+  color: var(--accent);
+  font-weight: 950;
+  margin-bottom: 10px;
+}
+
+.shoe-card--main h2 {
+  font-size: 34px;
+  letter-spacing: -1px;
+  margin-bottom: 6px;
+}
+
+.shoe-card--main p {
+  margin: 0;
+  color: #d7d7d7;
+}
+
+.shoe-card--small {
+  right: 0;
+  top: 0;
+  padding: 22px;
+  width: 150px;
+}
+
+.shoe-card--price {
+  left: 0;
+  bottom: 0;
+  padding: 22px;
+  width: 180px;
+}
+
+.shoe-card--small strong,
+.shoe-card--price strong {
+  display: block;
+  font-size: 30px;
+  margin-bottom: 4px;
+}
+
+.shoe-card--small span,
+.shoe-card--price span {
+  color: #d0d0d0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.home-features {
+  padding: 70px 0;
+}
+
+.home-features__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.feature-card {
+  background: white;
+  padding: 28px;
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.feature-card span {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.feature-card h3 {
+  margin: 18px 0 10px;
+  font-size: 22px;
+}
+
+.feature-card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__visual {
+    min-height: 360px;
+  }
+
+  .home-features__grid {
+    grid-template-columns: 1fr;
+  }
+}
