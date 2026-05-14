@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
 
 import Home from "./pages/Home";
 import Products from "./pages/Products";
@@ -85,6 +86,8 @@ function App() {
           }
         />
       </Routes>
+
+      <Footer />
     </BrowserRouter>
   );
 }

@@ -42,7 +42,7 @@ const Orders = () => {
       <section className="container">
         <div className="orders-head">
           <div>
-            <span>Order History</span>
+            <span>Sipariş Geçmişi</span>
             <h1>Siparişlerim</h1>
           </div>
           <p>{orders.length} sipariş</p>
