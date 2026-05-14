@@ -114,7 +114,9 @@ const ProductDetail = () => {
               <div className="detail-placeholder">KicksHub</div>
             )}
 
-            {discountPrice && <span className="detail-sale-badge">SALE</span>}
+            {discountPrice && (
+              <span className="detail-sale-badge">İNDİRİM</span>
+            )}
           </div>
         </div>
 
@@ -124,13 +126,15 @@ const ProductDetail = () => {
           </Link>
 
           <div className="detail-meta">
-            <span>{product.brand || "Unknown Brand"}</span>
+            <span>{product.brand || "Bilinmeyen Marka"}</span>
             <span>{product.category || "Sneaker"}</span>
           </div>
 
           <h1>{product.name}</h1>
 
-          <p className="detail-color">{product.color || "Color not set"}</p>
+          <p className="detail-color">
+            {product.color || "Renk bilgisi yok"}
+          </p>
 
           <p className="detail-desc">
             {product.description ||
@@ -203,16 +207,16 @@ const ProductDetail = () => {
 
           <div className="detail-perks">
             <div>
-              <strong>Secure Checkout</strong>
-              <span>Güvenli sipariş akışı</span>
+              <strong>Güvenli Alışveriş</strong>
+              <span>Token tabanlı kullanıcı ve sipariş akışı</span>
             </div>
             <div>
-              <strong>Stock Based</strong>
-              <span>Numara bazlı stok kontrolü</span>
+              <strong>Stok Kontrollü</strong>
+              <span>Numara bazlı stok takibi</span>
             </div>
             <div>
-              <strong>Coupon Ready</strong>
-              <span>Kupon kodu destekli</span>
+              <strong>Kupon Destekli</strong>
+              <span>İndirim kodu ile sipariş oluşturma</span>
             </div>
           </div>
         </div>

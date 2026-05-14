@@ -175,8 +175,8 @@ const AdminDashboard = () => {
       <section className="admin-hero">
         <div className="container admin-hero__inner">
           <div>
-            <span>Admin Control Center</span>
-            <h1>KicksHub Dashboard</h1>
+            <span>Admin Kontrol Merkezi</span>
+            <h1>KicksHub Paneli</h1>
             <p>
               Ürünleri, siparişleri, kuponları ve KicksDB import akışını buradan
               yönet.
@@ -184,7 +184,7 @@ const AdminDashboard = () => {
           </div>
 
           <button className="btn btn-accent" onClick={fetchAdminData}>
-            Refresh Data
+            Verileri Yenile
           </button>
         </div>
       </section>
@@ -192,27 +192,27 @@ const AdminDashboard = () => {
       <section className="container admin-content">
         <div className="stats-grid">
           <div className="stat-card">
-            <span>Total Products</span>
+            <span>Toplam Ürün</span>
             <strong>{summary.totalProducts || 0}</strong>
           </div>
 
           <div className="stat-card">
-            <span>Total Users</span>
+            <span>Toplam Kullanıcı</span>
             <strong>{summary.totalUsers || 0}</strong>
           </div>
 
           <div className="stat-card">
-            <span>Total Orders</span>
+            <span>Toplam Sipariş</span>
             <strong>{summary.totalOrders || 0}</strong>
           </div>
 
           <div className="stat-card stat-card--accent">
-            <span>Total Revenue</span>
+            <span>Toplam Gelir</span>
             <strong>{formatPrice(summary.totalRevenue)}</strong>
           </div>
 
           <div className="stat-card">
-            <span>Pending Orders</span>
+            <span>Bekleyen Siparişler</span>
             <strong>{summary.pendingOrders || 0}</strong>
           </div>
         </div>
@@ -221,7 +221,7 @@ const AdminDashboard = () => {
           <section className="admin-panel">
             <div className="admin-panel__head">
               <div>
-                <h2>Recent Orders</h2>
+                <h2>Son Siparişler</h2>
                 <p>Sipariş durumlarını buradan güncelle.</p>
               </div>
             </div>
@@ -248,12 +248,12 @@ const AdminDashboard = () => {
                         updateOrderStatus(order.id, event.target.value)
                       }
                     >
-                      <option value="pending">pending</option>
-                      <option value="confirmed">confirmed</option>
-                      <option value="preparing">preparing</option>
-                      <option value="shipped">shipped</option>
-                      <option value="delivered">delivered</option>
-                      <option value="cancelled">cancelled</option>
+                      <option value="pending">Beklemede</option>
+                      <option value="confirmed">Onaylandı</option>
+                      <option value="preparing">Hazırlanıyor</option>
+                      <option value="shipped">Gönderildi</option>
+                      <option value="delivered">Teslim Edildi</option>
+                      <option value="cancelled">İptal Edildi</option>
                     </select>
                   </article>
                 ))
@@ -270,7 +270,7 @@ const AdminDashboard = () => {
 
               <form onSubmit={handleImport} className="admin-form">
                 <div className="form-group">
-                  <label>Search Query</label>
+                  <label>Arama Sorgusu</label>
                   <input
                     value={importQuery}
                     onChange={(event) => setImportQuery(event.target.value)}
@@ -279,17 +279,17 @@ const AdminDashboard = () => {
                 </div>
 
                 <button className="btn btn-accent" disabled={importLoading}>
-                  {importLoading ? "Import ediliyor..." : "Import Products"}
+                  {importLoading ? "Import ediliyor..." : "KicksDB'den Import Et"}
                 </button>
               </form>
             </section>
 
             <section className="admin-panel">
-              <h2>Create Coupon</h2>
+              <h2>Kupon Oluştur</h2>
 
               <form onSubmit={createCoupon} className="admin-form">
                 <div className="form-group">
-                  <label>Code</label>
+                  <label>Kod</label>
                   <input
                     name="code"
                     value={couponForm.code}
@@ -300,19 +300,19 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Discount Type</label>
+                  <label>İndirim Türü</label>
                   <select
                     name="discountType"
                     value={couponForm.discountType}
                     onChange={handleCouponChange}
                   >
-                    <option value="percentage">percentage</option>
-                    <option value="fixed">fixed</option>
+                    <option value="percentage">Yüzde</option>
+                    <option value="fixed">Sabit</option>
                   </select>
                 </div>
 
                 <div className="form-group">
-                  <label>Discount Value</label>
+                  <label>İndirim Miktarı</label>
                   <input
                     type="number"
                     name="discountValue"
@@ -324,7 +324,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Min Order Amount</label>
+                  <label>Minimum Sipariş Tutarı</label>
                   <input
                     type="number"
                     name="minOrderAmount"
@@ -335,7 +335,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Usage Limit</label>
+                  <label>Kullanım Sınırı</label>
                   <input
                     type="number"
                     name="usageLimit"
@@ -346,7 +346,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Expires At</label>
+                  <label>Bitiş Tarihi</label>
                   <input
                     type="date"
                     name="expiresAt"
@@ -356,7 +356,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <button className="btn btn-accent" disabled={couponLoading}>
-                  {couponLoading ? "Oluşturuluyor..." : "Create Coupon"}
+                  {couponLoading ? "Oluşturuluyor..." : "Kupon Oluştur"}
                 </button>
               </form>
             </section>
@@ -367,7 +367,7 @@ const AdminDashboard = () => {
           <section className="admin-panel">
             <div className="admin-panel__head">
               <div>
-                <h2>Low Stock</h2>
+                <h2>Düşük Stok</h2>
                 <p>Stoku azalan varyantlar.</p>
               </div>
             </div>
@@ -384,7 +384,7 @@ const AdminDashboard = () => {
                         Size {item.size} / SKU: {item.sku}
                       </p>
                     </div>
-                    <strong>{item.stock} left</strong>
+                    <strong>{item.stock} adet</strong>
                   </article>
                 ))
               )}
@@ -394,7 +394,7 @@ const AdminDashboard = () => {
           <section className="admin-panel">
             <div className="admin-panel__head">
               <div>
-                <h2>Coupons</h2>
+                <h2>Kuponlar</h2>
                 <p>Aktif / pasif kupon yönetimi.</p>
               </div>
             </div>
@@ -420,7 +420,7 @@ const AdminDashboard = () => {
                       className={coupon.isActive ? "active" : "passive"}
                       onClick={() => toggleCouponStatus(coupon)}
                     >
-                      {coupon.isActive ? "Active" : "Passive"}
+                      {coupon.isActive ? "Aktif" : "Pasif"}
                     </button>
                   </article>
                 ))

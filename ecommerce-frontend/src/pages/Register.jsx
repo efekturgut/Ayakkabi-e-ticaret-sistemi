@@ -59,7 +59,7 @@ const Register = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Efe Kağan Turgut"
+                placeholder="Ad ve soyad"
                 required
               />
             </div>
@@ -71,7 +71,7 @@ const Register = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="efe@example.com"
+                placeholder="user@example.com"
                 required
               />
             </div>
@@ -83,7 +83,7 @@ const Register = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Şifren"
+                placeholder="Şifre"
                 required
               />
             </div>

@@ -18,36 +18,36 @@ const Navbar = () => {
         </Link>
 
         <nav className="navbar__links">
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/products">Products</NavLink>
+          <NavLink to="/">Ana Sayfa</NavLink>
+          <NavLink to="/products">Ürünler</NavLink>
 
           {isAuthenticated && (
             <>
-              <NavLink to="/cart">Cart</NavLink>
-              <NavLink to="/favorites">Favorites</NavLink>
-              <NavLink to="/orders">Orders</NavLink>
+              <NavLink to="/cart">Sepet</NavLink>
+              <NavLink to="/favorites">Favoriler</NavLink>
+              <NavLink to="/orders">Siparişlerim</NavLink>
             </>
           )}
 
-          {isAuthenticated && isAdmin && <NavLink to="/admin">Admin</NavLink>}
+          {isAuthenticated && isAdmin && <NavLink to="/admin">Yönetim</NavLink>}
         </nav>
 
         <div className="navbar__actions">
           {!isAuthenticated ? (
             <>
               <Link to="/login" className="navbar__login">
-                Login
+                Giriş Yap
               </Link>
 
               <Link to="/register" className="navbar__register">
-                Register
+                Kayıt Ol
               </Link>
             </>
           ) : (
             <>
               <span className="navbar__user">{user?.name}</span>
               <button onClick={handleLogout} className="navbar__logout">
-                Logout
+                Çıkış Yap
               </button>
             </>
           )}

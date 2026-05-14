@@ -7,17 +7,17 @@ const Home = () => {
       <section className="hero">
         <div className="container hero__inner">
           <div className="hero__content">
-            <span className="hero__badge">Sneaker Commerce Platform</span>
+            <span className="hero__badge">Yeni Sezon Sneaker Koleksiyonu</span>
 
             <h1>
-              Step Into <br />
-              Your Style.
+              Tarzını <br />
+              Adımlarınla Göster.
             </h1>
 
             <p>
-              KicksHub; sneaker ürünlerini keşfetmen, favorilerine eklemen,
-              sepete atman ve sipariş oluşturman için tasarlanmış modern bir
-              e-commerce deneyimidir.
+              KicksHub’da popüler sneaker modellerini keşfet, numarana göre stok
+              kontrolü yap, favorilerine ekle ve güvenli alışveriş akışıyla
+              siparişini oluştur.
             </p>
 
             <div className="hero__actions">
@@ -26,26 +26,26 @@ const Home = () => {
               </Link>
 
               <Link to="/register" className="btn-outline hero__outline">
-                Hemen Başla
+                Hesap Oluştur
               </Link>
             </div>
           </div>
 
           <div className="hero__visual">
             <div className="shoe-card shoe-card--main">
-              <span>NEW DROP</span>
-              <h2>Air Jordan Collection</h2>
-              <p>Premium sneaker selection</p>
+              <span>ÖNE ÇIKAN KOLEKSİYON</span>
+              <h2>Air Jordan Seçkisi</h2>
+              <p>Popüler modeller, güncel stoklar ve özel fiyatlar.</p>
             </div>
 
             <div className="shoe-card shoe-card--small">
               <strong>42</strong>
-              <span>Available Size</span>
+              <span>Stokta Numara</span>
             </div>
 
             <div className="shoe-card shoe-card--price">
               <strong>₺4.999</strong>
-              <span>Starting Price</span>
+              <span>Başlayan Fiyatlar</span>
             </div>
           </div>
         </div>
@@ -55,20 +55,29 @@ const Home = () => {
         <div className="container home-features__grid">
           <div className="feature-card">
             <span>01</span>
-            <h3>Gerçek Ürün Verisi</h3>
-            <p>KicksDB entegrasyonu ile sneaker ürünleri backend’e aktarılır.</p>
+            <h3>Gerçek Sneaker Verisi</h3>
+            <p>
+              Ürünler, KicksDB entegrasyonu ile içe aktarılır ve sistemde
+              yönetilebilir hale gelir.
+            </p>
           </div>
 
           <div className="feature-card">
             <span>02</span>
             <h3>Numara Bazlı Stok</h3>
-            <p>Her ürün için farklı numara ve stok yönetimi yapılır.</p>
+            <p>
+              Her ürün için farklı numaralar ve stok adetleri ayrı ayrı takip
+              edilir.
+            </p>
           </div>
 
           <div className="feature-card">
             <span>03</span>
-            <h3>Sepet & Sipariş</h3>
-            <p>Kullanıcıya özel sepet, kupon ve sipariş akışı desteklenir.</p>
+            <h3>Sepet ve Sipariş Akışı</h3>
+            <p>
+              Kullanıcılar ürünleri sepete ekleyebilir, kupon kullanabilir ve
+              sipariş oluşturabilir.
+            </p>
           </div>
         </div>
       </section>

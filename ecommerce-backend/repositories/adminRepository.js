@@ -18,10 +18,10 @@ const getDashboardStats = async () => {
   `);
 
   const totalRevenueResult = await pool.query(`
-    SELECT COALESCE(SUM(final_price), 0) AS total
-    FROM orders
-    WHERE status != 'cancelled'
-  `);
+  SELECT COALESCE(SUM(COALESCE(final_price, total_price)), 0) AS total
+  FROM orders
+  WHERE status != 'cancelled'
+`);
 
   const pendingOrdersResult = await pool.query(`
     SELECT COUNT(*) AS total

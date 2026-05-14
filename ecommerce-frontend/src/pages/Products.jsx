@@ -18,40 +18,39 @@ const Products = () => {
     limit: 12,
   });
 
-const fetchProducts = async () => {
-  try {
-    setLoading(true);
+  const fetchProducts = async (customFilters = filters) => {
+    try {
+      setLoading(true);
 
-    const params = {
-      page: filters.page,
-      limit: filters.limit,
-    };
+      const params = {
+        page: customFilters.page,
+        limit: customFilters.limit,
+      };
 
-    if (filters.search) params.search = filters.search;
-    if (filters.brand) params.brand = filters.brand;
-    if (filters.size) params.size = filters.size;
-    if (filters.minPrice) params.minPrice = filters.minPrice;
-    if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+      if (customFilters.search) params.search = customFilters.search;
+      if (customFilters.brand) params.brand = customFilters.brand;
+      if (customFilters.size) params.size = customFilters.size;
+      if (customFilters.minPrice) params.minPrice = customFilters.minPrice;
+      if (customFilters.maxPrice) params.maxPrice = customFilters.maxPrice;
 
-    const response = await api.get("/products", { params });
+      const response = await api.get("/products", { params });
+      const data = response.data;
 
-    console.log("Products response:", response.data);
-
-    const data = response.data;
-
-    if (Array.isArray(data)) {
-      setProducts(data);
-      setPagination(null);
-    } else {
-      setProducts(data.products || []);
-      setPagination(data.pagination || null);
+      if (Array.isArray(data)) {
+        setProducts(data);
+        setPagination(null);
+      } else {
+        setProducts(data.products || []);
+        setPagination(data.pagination || null);
+      }
+    } catch (error) {
+      console.error("Ürünler alınamadı:", error.response?.data || error.message);
+      setProducts([]);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Ürünler alınamadı:", error.response?.data || error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
   useEffect(() => {
     fetchProducts();
   }, [filters.page]);
@@ -66,11 +65,11 @@ const fetchProducts = async () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetchProducts();
+    fetchProducts(filters);
   };
 
   const clearFilters = () => {
-    setFilters({
+    const emptyFilters = {
       search: "",
       brand: "",
       size: "",
@@ -78,11 +77,10 @@ const fetchProducts = async () => {
       maxPrice: "",
       page: 1,
       limit: 12,
-    });
+    };
 
-    setTimeout(() => {
-      fetchProducts();
-    }, 0);
+    setFilters(emptyFilters);
+    fetchProducts(emptyFilters);
   };
 
   const goToPage = (page) => {
@@ -96,10 +94,10 @@ const fetchProducts = async () => {
     <main className="products-page">
       <section className="products-hero">
         <div className="container">
-          <span className="products-hero__badge">KicksHub Collection</span>
-          <h1>Find Your Next Pair.</h1>
+          <span className="products-hero__badge">KicksHub Koleksiyonu</span>
+          <h1>Yeni Sneaker’ını Keşfet.</h1>
           <p>
-            Markaya, numaraya, fiyata ve arama kelimesine göre sneaker
+            Marka, numara, fiyat aralığı ve arama kelimesine göre sneaker
             koleksiyonunu filtrele.
           </p>
         </div>
@@ -107,11 +105,11 @@ const fetchProducts = async () => {
 
       <section className="container products-layout">
         <aside className="filters-card">
-          <h2>Filters</h2>
+          <h2>Filtreler</h2>
 
           <form onSubmit={handleSubmit} className="filters-form">
             <div className="filter-group">
-              <label>Search</label>
+              <label>Arama</label>
               <input
                 type="text"
                 name="search"
@@ -122,13 +120,13 @@ const fetchProducts = async () => {
             </div>
 
             <div className="filter-group">
-              <label>Brand</label>
+              <label>Marka</label>
               <select
                 name="brand"
                 value={filters.brand}
                 onChange={handleChange}
               >
-                <option value="">All Brands</option>
+                <option value="">Tüm Markalar</option>
                 <option value="Nike">Nike</option>
                 <option value="Adidas">Adidas</option>
                 <option value="New Balance">New Balance</option>
@@ -139,9 +137,9 @@ const fetchProducts = async () => {
             </div>
 
             <div className="filter-group">
-              <label>Size</label>
+              <label>Numara</label>
               <select name="size" value={filters.size} onChange={handleChange}>
-                <option value="">All Sizes</option>
+                <option value="">Tüm Numaralar</option>
                 {["38", "39", "40", "41", "42", "43", "44", "45", "46"].map(
                   (size) => (
                     <option key={size} value={size}>
@@ -177,11 +175,11 @@ const fetchProducts = async () => {
             </div>
 
             <button type="submit" className="btn btn-accent">
-              Apply Filters
+              Filtrele
             </button>
 
             <button type="button" className="btn-outline" onClick={clearFilters}>
-              Clear
+              Temizle
             </button>
           </form>
         </aside>
@@ -189,17 +187,19 @@ const fetchProducts = async () => {
         <div className="products-content">
           <div className="products-toolbar">
             <div>
-              <h2>Products</h2>
+              <h2>Ürünler</h2>
               <p>
-                {pagination
+                {loading
+                  ? "Ürünler yükleniyor..."
+                  : pagination
                   ? `${pagination.total} ürün bulundu`
-                  : "Ürünler yükleniyor"}
+                  : `${products.length} ürün bulundu`}
               </p>
             </div>
 
             {pagination && (
               <span>
-                Page {pagination.page} / {pagination.totalPages || 1}
+                Sayfa {pagination.page} / {pagination.totalPages || 1}
               </span>
             )}
           </div>
@@ -228,7 +228,7 @@ const fetchProducts = async () => {
                     disabled={!pagination.hasPrevPage}
                     onClick={() => goToPage(pagination.page - 1)}
                   >
-                    Prev
+                    Önceki
                   </button>
 
                   <span>
@@ -239,7 +239,7 @@ const fetchProducts = async () => {
                     disabled={!pagination.hasNextPage}
                     onClick={() => goToPage(pagination.page + 1)}
                   >
-                    Next
+                    Sonraki
                   </button>
                 </div>
               )}
