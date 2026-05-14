@@ -135,3 +135,26 @@
   font-size: 13px;
   font-weight: 900;
 }
+.product-card__favorite {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+  font-size: 19px;
+  font-weight: 950;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  transition: 0.2s ease;
+  z-index: 3;
+}
+
+.product-card__favorite:hover {
+  background: var(--accent);
+  transform: scale(1.08);
+}

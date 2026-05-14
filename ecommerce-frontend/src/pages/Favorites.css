@@ -1,0 +1,129 @@
+.favorites-page {
+  min-height: 100vh;
+}
+
+.favorites-hero {
+  background:
+    radial-gradient(circle at 82% 15%, rgba(215, 255, 63, 0.3), transparent 24%),
+    linear-gradient(135deg, #101010, #1b1b1b);
+  color: white;
+  padding: 68px 0;
+}
+
+.favorites-hero span {
+  color: var(--accent);
+  font-weight: 950;
+}
+
+.favorites-hero h1 {
+  font-size: clamp(42px, 7vw, 82px);
+  letter-spacing: -3px;
+  line-height: 0.95;
+  margin: 12px 0;
+}
+
+.favorites-hero p {
+  color: #cfcfcf;
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+.favorites-content {
+  padding: 38px 0 80px;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.favorite-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: 0.2s ease;
+}
+
+.favorite-card:hover {
+  transform: translateY(-4px);
+}
+
+.favorite-card__image {
+  height: 240px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(215, 255, 63, 0.35), transparent 35%),
+    #f0f0ed;
+}
+
+.favorite-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 22px;
+}
+
+.favorite-card__image span {
+  font-size: 28px;
+  font-weight: 950;
+}
+
+.favorite-card__body {
+  padding: 20px;
+}
+
+.favorite-card__meta {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.favorite-card h3 {
+  font-size: 19px;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.favorite-card p {
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+.favorite-card__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.favorite-card__bottom strong {
+  font-size: 20px;
+}
+
+.favorite-card__bottom button {
+  border: none;
+  background: #ffe7e7;
+  color: #b00000;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+@media (max-width: 1000px) {
+  .favorites-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .favorites-grid {
+    grid-template-columns: 1fr;
+  }
+}
