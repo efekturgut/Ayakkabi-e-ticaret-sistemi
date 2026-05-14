@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/layout/Navbar";
 
@@ -19,6 +20,25 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
+
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 2500,
+          style: {
+            borderRadius: "14px",
+            background: "#111",
+            color: "#fff",
+            fontWeight: "700",
+          },
+          success: {
+            iconTheme: {
+              primary: "#d7ff3f",
+              secondary: "#111",
+            },
+          },
+        }}
+      />
 
       <Routes>
         <Route path="/" element={<Home />} />
