@@ -1,7 +1,12 @@
-import React from "react";
-
 const AdminDashboard = () => {
-  return <div>Admin Dashboard</div>;
+  return (
+    <main className="page">
+      <section className="container">
+        <h1 className="page-title">Admin Dashboard</h1>
+        <p>Admin dashboard burada olacak.</p>
+      </section>
+    </main>
+  );
 };
 
 export default AdminDashboard;
