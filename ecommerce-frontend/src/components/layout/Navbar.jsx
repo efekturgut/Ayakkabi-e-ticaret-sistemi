@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import Logo from "./Logo";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -13,21 +14,14 @@ const Navbar = () => {
   return (
     <header className="navbar">
       <div className="container navbar__inner">
-        <Link to="/" className="navbar__logo">
-          KicksHub
-        </Link>
+        <Logo />
 
         <nav className="navbar__links">
           <NavLink to="/">Ana Sayfa</NavLink>
           <NavLink to="/products">Ürünler</NavLink>
-
-          {isAuthenticated && (
-            <>
-              <NavLink to="/cart">Sepet</NavLink>
-              <NavLink to="/favorites">Favoriler</NavLink>
-              <NavLink to="/orders">Siparişlerim</NavLink>
-            </>
-          )}
+          <NavLink to="/cart">Sepet</NavLink>
+          <NavLink to="/favorites">Favoriler</NavLink>
+          <NavLink to="/orders">Siparişlerim</NavLink>
 
           {isAuthenticated && isAdmin && <NavLink to="/admin">Yönetim</NavLink>}
         </nav>

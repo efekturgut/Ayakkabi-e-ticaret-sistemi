@@ -81,7 +81,7 @@ const AdminDashboard = () => {
     try {
       setImportLoading(true);
 
-      const response = await api.post("/kicksdb/import", {
+      const response = await api.post("/nextdb/import", {
         query: importQuery,
       });
 
@@ -176,9 +176,9 @@ const AdminDashboard = () => {
         <div className="container admin-hero__inner">
           <div>
             <span>Admin Kontrol Merkezi</span>
-            <h1>KicksHub Paneli</h1>
+            <h1>Nextstep Paneli</h1>
             <p>
-              Ürünleri, siparişleri, kuponları ve KicksDB import akışını buradan
+              Ürünleri, siparişleri, kuponları ve NextDB import akışını buradan
               yönet.
             </p>
           </div>
@@ -263,7 +263,7 @@ const AdminDashboard = () => {
 
           <aside className="admin-side">
             <section className="admin-panel">
-              <h2>KicksDB Import</h2>
+              <h2>NextDB Import</h2>
               <p className="admin-muted">
                 Örnek: Nike Dunk, Air Jordan 1, Adidas Samba, New Balance 550.
               </p>
@@ -279,7 +279,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <button className="btn btn-accent" disabled={importLoading}>
-                  {importLoading ? "Import ediliyor..." : "KicksDB'den Import Et"}
+                  {importLoading ? "Import ediliyor..." : "NextDB'den Import Et"}
                 </button>
               </form>
             </section>

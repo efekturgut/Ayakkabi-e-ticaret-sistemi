@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom";
 import "./Footer.css";
+import Logo from "./Logo";
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__brand">
-          <Link to="/" className="footer__logo">
-            KicksHub
-          </Link>
-
+        <Logo size="large" />
           <p>
             Sneaker ürünlerini keşfedebileceğin, favorilerine ekleyebileceğin
             ve güvenli sipariş akışıyla alışveriş yapabileceğin modern
@@ -44,7 +42,7 @@ const Footer = () => {
       </div>
 
       <div className="container footer__bottom">
-        <span>© 2026 KicksHub. Tüm hakları saklıdır.</span>
+        <span>© 2026 Nextstep. Tüm hakları saklıdır.</span>
        
       </div>
     </footer>

@@ -15,16 +15,7 @@
   justify-content: space-between;
 }
 
-.navbar__logo {
-  font-size: 26px;
-  font-weight: 950;
-  letter-spacing: -1px;
-}
 
-.navbar__logo::after {
-  content: ".";
-  color: var(--accent);
-}
 
 .navbar__links {
   display: flex;

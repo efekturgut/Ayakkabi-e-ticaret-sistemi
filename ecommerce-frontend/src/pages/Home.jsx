@@ -52,7 +52,7 @@ const Home = () => {
             </h1>
 
             <p>
-              KicksHub’da popüler sneaker modellerini incele, numarana göre
+              Nextstep’de popüler sneaker modellerini incele, numarana göre
               stok kontrolü yap, favorilerine ekle ve hızlıca sipariş oluştur.
             </p>
 
@@ -93,7 +93,7 @@ const Home = () => {
                     alt={mainProduct.name}
                   />
                 ) : (
-                  <span>KicksHub</span>
+                  <span>Nextstep</span>
                 )}
               </div>
 
@@ -198,7 +198,7 @@ const Home = () => {
                         alt={product.name}
                       />
                     ) : (
-                      <span>KicksHub</span>
+                      <span>Nextstep</span>
                     )}
                   </div>
 
@@ -250,7 +250,7 @@ const Home = () => {
           </div>
 
           <div className="benefit-card benefit-card--dark">
-            <span>KicksHub</span>
+            <span>Nextstep</span>
             <h3>Modern alışveriş deneyimi</h3>
             <p>
               Ürün, sepet, sipariş ve yönetim paneliyle uçtan uca e-ticaret

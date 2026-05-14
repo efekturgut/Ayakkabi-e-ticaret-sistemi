@@ -1,0 +1,53 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+}
+
+.logo__icon {
+  width: 52px;
+  height: 38px;
+  display: block;
+  filter: drop-shadow(0 0 12px rgba(215, 255, 63, 0.18));
+}
+
+.logo__text {
+  font-size: 28px;
+  font-weight: 950;
+  letter-spacing: -1.4px;
+  line-height: 1;
+}
+
+.logo__text span {
+  color: var(--accent);
+}
+
+.logo--small .logo__icon {
+  width: 42px;
+  height: 30px;
+}
+
+.logo--small .logo__text {
+  font-size: 22px;
+}
+
+.logo--large .logo__icon {
+  width: 64px;
+  height: 46px;
+}
+
+.logo--large .logo__text {
+  font-size: 34px;
+}
+
+@media (max-width: 700px) {
+  .logo__icon {
+    width: 44px;
+    height: 32px;
+  }
+
+  .logo__text {
+    font-size: 23px;
+  }
+}

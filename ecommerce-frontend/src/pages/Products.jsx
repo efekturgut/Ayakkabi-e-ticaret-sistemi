@@ -94,7 +94,7 @@ const Products = () => {
     <main className="products-page">
       <section className="products-hero">
         <div className="container">
-          <span className="products-hero__badge">KicksHub Koleksiyonu</span>
+          <span className="products-hero__badge">Nextstep Koleksiyonu</span>
           <h1>Yeni Sneaker’ını Keşfet.</h1>
           <p>
             Marka, numara, fiyat aralığı ve arama kelimesine göre sneaker
