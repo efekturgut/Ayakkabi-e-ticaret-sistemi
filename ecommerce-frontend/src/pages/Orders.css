@@ -1,0 +1,128 @@
+.orders-page {
+  padding: 58px 0 90px;
+  min-height: calc(100vh - 76px);
+}
+
+.orders-head {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(215, 255, 63, 0.32), transparent 24%),
+    #111;
+  color: white;
+  border-radius: 34px;
+  padding: 38px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.orders-head span {
+  color: var(--accent);
+  font-weight: 950;
+}
+
+.orders-head h1 {
+  font-size: clamp(38px, 6vw, 70px);
+  letter-spacing: -3px;
+  line-height: 0.95;
+  margin-top: 10px;
+}
+
+.orders-head p {
+  color: #d6d6d6;
+  font-weight: 900;
+}
+
+.orders-list {
+  display: grid;
+  gap: 14px;
+}
+
+.order-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: 1fr 180px 140px;
+  align-items: center;
+  gap: 20px;
+}
+
+.order-id {
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.order-card h3 {
+  margin: 5px 0;
+}
+
+.order-card p {
+  color: var(--muted);
+}
+
+.order-price span {
+  display: inline-block;
+  background: var(--accent);
+  color: #111;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 950;
+  margin-bottom: 7px;
+}
+
+.order-price strong {
+  display: block;
+  font-size: 20px;
+}
+
+.order-status {
+  justify-self: end;
+  padding: 9px 13px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: capitalize;
+}
+
+.status-pending {
+  background: #fff4d8;
+  color: #8a5a00;
+}
+
+.status-confirmed,
+.status-preparing {
+  background: #e7f0ff;
+  color: #0b4cb8;
+}
+
+.status-shipped {
+  background: #efe7ff;
+  color: #5a20b8;
+}
+
+.status-delivered {
+  background: #e4ffe8;
+  color: #087a1f;
+}
+
+.status-cancelled {
+  background: #ffe5e5;
+  color: #a80000;
+}
+
+@media (max-width: 760px) {
+  .orders-head,
+  .order-card {
+    grid-template-columns: 1fr;
+  }
+
+  .order-status {
+    justify-self: start;
+  }
+}
